@@ -1,27 +1,16 @@
+import { Driver } from "@prisma/client";
 import { prisma } from "../database";
-
-interface DriveProps {
-  customer_id: string;
-  origin: { latitude: number; longitude: number };
-  destination: { latitude: number; longitude: number };
-  distance: number;
-  duration: number;
-  driver: {
-    id: string;
-    name: string;
-  };
-  value: number;
-}
+import { DriveProps } from "../types/types";
 
 export class DriverService {
   constructor() {}
 
-  public async getAllDrivers() {
+  public async getAllDrivers(): Promise<Driver[]> {
     const drivers = await prisma.driver.findMany();
     return drivers;
   }
 
-  public async confirmRide(input: DriveProps) {
+  public async confirmRide(input: DriveProps): Promise<boolean> {
     if (
       !input.origin.latitude ||
       !input.origin.longitude ||
@@ -61,6 +50,6 @@ export class DriverService {
         customerId: Number(input.customer_id),
       },
     });
-    return { success: true };
+    return true;
   }
 }

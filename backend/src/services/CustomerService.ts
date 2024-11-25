@@ -1,9 +1,13 @@
+import { Customer } from "@prisma/client";
 import { prisma } from "../database";
 
 export class CustomerService {
   constructor() {}
 
-  public async getCustomerById(customerId: number, driverId?: number) {
+  public async getCustomerById(
+    customerId: number,
+    driverId?: number
+  ): Promise<Customer[]> {
     if (!customerId) {
       throw new Error("Customer ID is required");
     }

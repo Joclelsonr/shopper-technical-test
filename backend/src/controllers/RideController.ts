@@ -31,33 +31,11 @@ class RideController {
     const body = req.body;
     try {
       const reqGoogleService = await this.googleMapsService.getEstimate(body);
-
       const getDrivers = await this.driverService.getAllDrivers();
-
-      const drivers = getDrivers
-        .map((driver) => {
-          return {
-            origin: reqGoogleService.routes[0].legs[0].start_location,
-            destination: reqGoogleService.routes[0].legs[0].end_location,
-            distance: reqGoogleService.routes[0].legs[0].distance.text,
-            duration: reqGoogleService.routes[0].legs[0].duration.text,
-            options: {
-              id: driver.id,
-              name: driver.name,
-              description: driver.description,
-              vehicle: driver.car,
-              review: {
-                rating: driver.rate,
-                // comment: driver.,
-              },
-              value:
-                (reqGoogleService.routes[0].legs[0].distance.value / 1000) *
-                Number(driver.rate),
-            },
-          };
-        })
-        .sort((a, b) => a.options.value - b.options.value);
-
+      const drivers = await this.googleMapsService.calculatePrice(
+        getDrivers,
+        reqGoogleService
+      );
       res.status(200).json({
         drivers,
         routeResponse: reqGoogleService,
@@ -74,7 +52,7 @@ class RideController {
     try {
       const confirmRide = await this.driverService.confirmRide(body);
 
-      res.status(200).json(confirmRide);
+      res.status(200).json({ success: confirmRide });
     } catch (error) {
       res
         .status(400)

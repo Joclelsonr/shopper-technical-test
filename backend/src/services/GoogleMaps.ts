@@ -1,7 +1,7 @@
 import { Client } from "@googlemaps/google-maps-services-js";
 // import { DriverService } from "./DriverService";
 
-interface Ride {
+interface RidePros {
   customer_id: number;
   origin: { latitude: number; longitude: number };
   destination: { latitude: number; longitude: number };
@@ -12,7 +12,7 @@ export class GoogleMapsService {
     private client: Client = new Client({}) // private driverService: DriverService = new DriverService()
   ) {}
 
-  async getEstimate(input: Ride) {
+  async getEstimate(input: RidePros) {
     if (!input.origin || !input.destination) {
       throw new Error("Missing origin or destination");
     }

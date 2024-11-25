@@ -49,6 +49,19 @@ class RideController {
         .json({ error_code: 400, error_description: error.message });
     }
   };
+
+  public confirm = async (req: Request, res: Response) => {
+    const body = req.body;
+    try {
+      const confirmRide = await this.driverService.confirmRide(body);
+
+      res.status(200).json(confirmRide);
+    } catch (error) {
+      res
+        .status(400)
+        .json({ error_code: 400, error_description: error.message });
+    }
+  };
 }
 
 export default new RideController();

@@ -34,14 +34,16 @@ model Driver {
 model Race {
   id         Int      @id @default(autoincrement())
   driverId   Int
+  driverName String
   origin     String
   destiny    String
   distanceKm Decimal
+  distance   Decimal
   totalPrice Decimal
   createdAt  DateTime @default(now())
 
-  user   Customer? @relation(fields: [userId], references: [id])
-  userId Int?
+  customer   Customer @relation(fields: [customerId], references: [id])
+  customerId Int
 
   @@map("races")
 }

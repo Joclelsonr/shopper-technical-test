@@ -44,4 +44,24 @@ export class CustomerService {
     });
     return customers;
   }
+
+  public async createCustomer(customer: Customer): Promise<Customer> {
+    if (!customer.name) {
+      throw new Error("Customer name is required");
+    }
+    if (!customer.email) {
+      throw new Error("Customer email is required");
+    }
+    const customerExists = await prisma.customer.findUnique({
+      where: { email: customer.email },
+    });
+    if (customerExists) {
+      throw new Error("Customer already exists");
+    }
+
+    const createdCustomer = await prisma.customer.create({
+      data: customer,
+    });
+    return createdCustomer;
+  }
 }

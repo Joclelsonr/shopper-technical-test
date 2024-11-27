@@ -13,7 +13,7 @@ model Customer {
   email     String   @unique
   createdAt DateTime @default(now())
 
-  Races Race[]
+  races Race[]
 
   @@map("customers")
 }
@@ -32,15 +32,17 @@ model Driver {
 }
 
 model Race {
-  id         Int      @id @default(autoincrement())
-  driverId   Int
-  driverName String
-  origin     String
-  destiny    String
-  distanceKm Decimal
-  distance   Decimal
-  totalPrice Decimal
-  createdAt  DateTime @default(now())
+  id          Int      @id @default(autoincrement())
+  driverId    Int
+  driverName  String
+  origin      String
+  originName  String
+  destiny     String
+  destinyName String
+  duration    Decimal
+  distance    Decimal
+  totalPrice  Decimal
+  createdAt   DateTime @default(now())
 
   customer   Customer @relation(fields: [customerId], references: [id])
   customerId Int

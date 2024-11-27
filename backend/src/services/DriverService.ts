@@ -41,9 +41,11 @@ export class DriverService {
     await prisma.race.create({
       data: {
         origin: `${input.origin.latitude}, ${input.origin.longitude}`,
+        originName: input.originName,
         destiny: `${input.destination.latitude}, ${input.destination.longitude}`,
-        distanceKm: input.distance,
-        distance: input.duration,
+        destinyName: input.destinationName,
+        distance: input.distance,
+        duration: input.duration,
         driverId: Number(input.driver.id),
         driverName: input.driver.name,
         totalPrice: input.value,

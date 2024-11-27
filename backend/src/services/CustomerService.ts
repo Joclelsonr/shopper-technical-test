@@ -25,7 +25,7 @@ export class CustomerService {
           id: customerId,
         },
         include: {
-          Races: {
+          races: {
             where: { driverId: driverId },
             orderBy: { createdAt: "desc" },
           },
@@ -37,7 +37,7 @@ export class CustomerService {
     customers = await prisma.customer.findMany({
       where: { id: customerId },
       include: {
-        Races: {
+        races: {
           orderBy: { createdAt: "desc" },
         },
       },

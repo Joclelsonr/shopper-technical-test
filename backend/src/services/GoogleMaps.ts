@@ -45,8 +45,8 @@ export class GoogleMapsService {
         return {
           origin: data.routes[0].legs[0].start_location,
           destination: data.routes[0].legs[0].end_location,
-          distance: data.routes[0].legs[0].distance.text,
-          duration: data.routes[0].legs[0].duration.text,
+          distance: data.routes[0].legs[0].distance.value,
+          duration: data.routes[0].legs[0].duration.value,
           options: {
             id: driver.id,
             name: driver.name,

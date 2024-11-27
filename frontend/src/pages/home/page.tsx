@@ -21,6 +21,8 @@ const HomePage = () => {
   const { fetchPostData, data, error } = useApi();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
   const navigate = useNavigate();
+  const originName = data?.routeResponse?.routes[0]?.legs[0]?.start_address;
+  const destinationName = data?.routeResponse?.routes[0]?.legs[0]?.end_address;
 
   const geocodeAddress = (
     address: string
@@ -87,6 +89,8 @@ const HomePage = () => {
         {
           customer_id: user.id,
           origin: { latitude: drive.origin.lat, longitude: drive.origin.lng },
+          originName: originName,
+          destinationName: destinationName,
           destination: {
             latitude: drive.destination.lat,
             longitude: drive.destination.lng,

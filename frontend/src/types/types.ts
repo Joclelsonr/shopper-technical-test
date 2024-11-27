@@ -14,3 +14,16 @@ export type DriverPros = {
     };
   };
 };
+
+export type RaceProps = {
+  id: number;
+  driverName: string;
+  createdAt: Date;
+  destiny: string;
+  destinyName: string;
+  origin: string;
+  originName: string;
+  totalPrice: number;
+  distance: number;
+  duration: number;
+};

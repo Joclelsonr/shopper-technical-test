@@ -14,7 +14,7 @@ class RideController {
     const { customerId } = req.params;
     const { driver_id } = req.query;
     try {
-      const customer = await this.customerService.getCustomerById(
+      const [customer] = await this.customerService.getCustomerById(
         Number(customerId),
         Number(driver_id)
       );

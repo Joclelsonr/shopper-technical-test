@@ -6,12 +6,15 @@ export const useApi = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<any>(null);
 
-  const fetchData = useCallback(async (url: string) => {
+  const fetchData = useCallback(async (url: string, params?: any) => {
     setIsLoading(true);
     setError(null);
     try {
       const response = await axios.get(
-        `${process.env.REACT_APP_API_URL}/${url}`
+        `${process.env.REACT_APP_API_URL}/${url}`,
+        {
+          params: params && params,
+        }
       );
       setData(response.data);
     } catch (error) {

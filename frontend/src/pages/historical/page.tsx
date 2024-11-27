@@ -2,10 +2,16 @@ import { useEffect } from "react";
 import Header from "../../components/header";
 import { useApi } from "../../hooks/useApi";
 import { RaceProps } from "../../types/types";
+import { useForm, SubmitHandler } from "react-hook-form";
+
+type IFormInput = {
+  driver_id: number;
+};
 
 const HistoricalPage = () => {
   const { fetchData, data } = useApi();
   const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const { register, handleSubmit } = useForm<IFormInput>();
 
   useEffect(() => {
     getData();
@@ -15,30 +21,53 @@ const HistoricalPage = () => {
     await fetchData(`ride/${user.id}`);
   };
 
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    console.log(data);
+    await fetchData(`ride/${user.id}`, data);
+  };
+
   return (
     <>
       <Header />
-      <div className="flex w-full h-14 items-center justify-center gap-4">
-        <span className="font-medium text-blue-400">Filtro por Motorista:</span>
-        <select
-          name=""
-          id=""
-          className="border py-1 px-1 rounded-lg border-blue-400 text-blue-400"
-        >
-          {data &&
-            data[0]?.races?.map((race: { id: number; driverName: string }) => (
-              <option key={race.id} value={race.id}>
-                {race.driverName}
-              </option>
-            ))}
-        </select>
-        <button className="w-[100px] bg-blue-400 py-1 text-white rounded-lg">
-          Aplicar
-        </button>
-      </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex w-full h-14 items-center justify-center gap-4">
+          <span className="font-medium text-blue-400">
+            Filtro por Motorista:
+          </span>
+          <select
+            {...register("driver_id")}
+            className="border py-1 px-1 rounded-lg border-blue-400 text-blue-400"
+          >
+            {data &&
+              data?.races
+                .filter(
+                  (race: RaceProps, index: number, self: RaceProps[]) =>
+                    self.findIndex((r) => r.driverName === race.driverName) ===
+                    index
+                )
+                .map(
+                  (race: {
+                    id: number;
+                    driverId: number;
+                    driverName: string;
+                  }) => (
+                    <option key={race.id} value={race.driverId}>
+                      {race.driverName}
+                    </option>
+                  )
+                )}
+          </select>
+          <button
+            type="submit"
+            className="w-[100px] bg-blue-400 py-1 text-white rounded-lg"
+          >
+            Aplicar
+          </button>
+        </div>
+      </form>
       <div className="flex flex-col justify-center items-center mt-2">
         {data &&
-          data[0]?.races?.map((race: RaceProps) => (
+          data?.races?.map((race: RaceProps) => (
             <div
               key={race.id}
               className="w-4/5 flex flex-col py-2 px-2 gap-1 border-b border-blue-400"

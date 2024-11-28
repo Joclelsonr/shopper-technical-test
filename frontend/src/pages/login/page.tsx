@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 type Inputs = {
   name: string;
@@ -8,7 +9,11 @@ type Inputs = {
 };
 
 const LoginPage = () => {
-  const { register, handleSubmit } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>();
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<Inputs> = async (inputs) => {
@@ -20,8 +25,13 @@ const LoginPage = () => {
           navigate("/home");
         }
       })
-      .catch((err) => {
-        console.log(err.response.data);
+      .catch((error) => {
+        if (error.response.data.error_description.includes("exists")) {
+          toast.info("Usuário já cadastrado, redirecionando...");
+          navigate("/home");
+        } else {
+          toast.error("Erro ao cadastrar usuário");
+        }
       });
   };
 
@@ -30,19 +40,41 @@ const LoginPage = () => {
       <div className="flex flex-1 flex-col items-center justify-center">
         <h1 className="font-semibold text-3xl text-blue-400 mb-6">Login</h1>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col gap-4">
-            <input
-              type="text"
-              placeholder="Nome"
-              className="w-[300px] border-2 border-blue-400 rounded-lg p-1.5 outline-none"
-              {...register("name")}
-            />
-            <input
-              type="email"
-              placeholder="E-mail"
-              className="w-[300px] border-2 border-blue-400 rounded-lg p-1.5 outline-none"
-              {...register("email")}
-            />
+          <div className="flex flex-col">
+            <div className="flex flex-col">
+              <input
+                type="text"
+                placeholder="Nome"
+                className="w-[300px] border-2 border-blue-400 rounded-lg p-1.5 outline-none"
+                {...register("name", { required: "Digite seu nome" })}
+              />
+              <span className="h-6">
+                <p
+                  className={`text-sm text-red-400 ${
+                    errors?.name ? "" : "hidden"
+                  }`}
+                >
+                  {errors?.name?.message}
+                </p>
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <input
+                type="email"
+                placeholder="E-mail"
+                className="w-[300px] border-2 border-blue-400 rounded-lg p-1.5 outline-none"
+                {...register("email", { required: "Digite seu e-mail" })}
+              />
+              <span className="h-5">
+                <p
+                  className={`text-sm text-red-400 ${
+                    errors?.email ? "" : "hidden"
+                  }`}
+                >
+                  {errors?.email?.message}
+                </p>
+              </span>
+            </div>
           </div>
           <button
             type="submit"

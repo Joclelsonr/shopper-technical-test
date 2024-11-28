@@ -7,6 +7,7 @@ import { useApi } from "../../hooks/useApi";
 import { DriverPros } from "../../types/types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "sonner";
 
 type Inputs = {
   origin: string;
@@ -78,12 +79,16 @@ const HomePage = () => {
             setMarkers([originCoords, destinationCoords]);
             reset();
           } else {
-            console.error(`Erro ao calcular a rota: ${status}`);
+            toast.error(`Erro ao calcular a rota: ${status}`);
           }
         }
       );
     } catch (error) {
-      console.log(error);
+      let errorMessage = "Digite o endereço corretamente";
+      if (error instanceof Error) {
+        errorMessage = error.message;
+      }
+      toast.error(errorMessage);
     }
   };
 
@@ -111,7 +116,7 @@ const HomePage = () => {
         navigate("/historical");
       }
     } catch (error) {
-      console.log(error);
+      toast.error("Erro ao confirmar a corrida");
     }
   };
 

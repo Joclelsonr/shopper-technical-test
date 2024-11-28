@@ -3,6 +3,7 @@ import {
   DirectionsResponseData,
 } from "@googlemaps/google-maps-services-js";
 import { Driver } from "@prisma/client";
+import BaseError from "../errors/BaseError";
 
 type RidePros = {
   customer_id: number;
@@ -14,18 +15,24 @@ export class GoogleMapsService {
   constructor(private client: Client = new Client({})) {}
 
   async getEstimate(input: RidePros) {
-    if (!input.origin || !input.destination) {
-      throw new Error("Missing origin or destination");
+    if (
+      !input.origin.latitude ||
+      !input.origin.longitude ||
+      !input.destination.latitude ||
+      !input.origin.longitude
+    ) {
+      throw new BaseError(400, "Missing origin or destination");
     }
     if (!input.customer_id) {
-      throw new Error("Missing customer_id");
+      throw new BaseError(400, "Missing customer_id");
     }
 
     if (
       input.origin.latitude === input.destination.latitude &&
       input.origin.longitude === input.destination.longitude
     ) {
-      throw new Error("Origin and destination cannot be the same");
+      console.log("caiu no destino igual", input);
+      throw new BaseError(400, "Origin and destination cannot be the same");
     }
 
     const response = await this.client.directions({

@@ -1,5 +1,6 @@
 import { Customer } from "@prisma/client";
 import prisma from "../database";
+import BaseError from "../errors/BaseError";
 
 export class CustomerService {
   constructor() {}
@@ -9,7 +10,7 @@ export class CustomerService {
     driverId?: number
   ): Promise<Customer[]> {
     if (!customerId) {
-      throw new Error("Customer ID is required");
+      throw new BaseError(400, "Customer ID is required");
     }
 
     let customers = [];
@@ -18,7 +19,7 @@ export class CustomerService {
         where: { id: driverId },
       });
       if (!validDriver) {
-        throw new Error("No rides found");
+        throw new BaseError(404, "No rides found");
       }
       customers = await prisma.customer.findMany({
         where: {
@@ -47,16 +48,16 @@ export class CustomerService {
 
   public async createCustomer(customer: Customer): Promise<Customer> {
     if (!customer.name) {
-      throw new Error("Customer name is required");
+      throw new BaseError(400, "Customer name is required");
     }
     if (!customer.email) {
-      throw new Error("Customer email is required");
+      throw new BaseError(400, "Customer email is required");
     }
     const customerExists = await prisma.customer.findUnique({
       where: { email: customer.email },
     });
     if (customerExists) {
-      throw new Error("Customer already exists");
+      throw new BaseError(404, "Customer already exists");
     }
 
     const createdCustomer = await prisma.customer.create({

@@ -1,6 +1,7 @@
 import prisma from "../database";
 import { Driver } from "@prisma/client";
 import { DriveProps } from "../types/types";
+import BaseError from "../errors/BaseError";
 
 export class DriverService {
   constructor() {}
@@ -17,25 +18,28 @@ export class DriverService {
       !input.destination.latitude ||
       !input.destination.longitude
     ) {
-      throw new Error("Origin and destination are required");
+      throw new BaseError(400, "Origin and destination are required");
     }
     if (!input.customer_id) {
-      throw new Error("Customer ID is required");
+      throw new BaseError(400, "Customer ID is required");
     }
     if (
       input.origin.latitude === input.destination.latitude ||
       input.origin.longitude === input.destination.longitude
     ) {
-      throw new Error("Origin and destination cannot be the same");
+      throw new BaseError(400, "Origin and destination cannot be the same");
     }
     const driver = await prisma.driver.findFirst({
       where: { id: Number(input.driver.id) },
     });
     if (!driver) {
-      throw new Error("Driver not found");
+      throw new BaseError(404, "Driver not found");
     }
     if (input.distance < Number(driver.kmMin)) {
-      throw new Error("Driver does not meet the minimum distance requirement");
+      throw new BaseError(
+        406,
+        "Driver does not meet the minimum distance requirement"
+      );
     }
 
     await prisma.race.create({

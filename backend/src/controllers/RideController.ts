@@ -21,9 +21,10 @@ class RideController {
 
       res.status(200).json(customer);
     } catch (error) {
-      res
-        .status(404)
-        .json({ error_code: 400, error_description: error.message });
+      res.status(error.statusCode).json({
+        error_code: error.statusCode,
+        error_description: error.message,
+      });
     }
   };
 
@@ -41,9 +42,10 @@ class RideController {
         routeResponse: reqGoogleService,
       });
     } catch (error) {
-      res
-        .status(400)
-        .json({ error_code: 400, error_description: error.message });
+      res.status(error.statusCode).json({
+        error_code: error.statusCode,
+        error_description: error.message,
+      });
     }
   };
 
@@ -54,9 +56,10 @@ class RideController {
 
       res.status(200).json({ success: confirmRide });
     } catch (error) {
-      res
-        .status(400)
-        .json({ error_code: 400, error_description: error.message });
+      res.status(error.statusCode).json({
+        error_code: error.statusCode,
+        error_description: error.message,
+      });
     }
   };
 }

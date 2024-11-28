@@ -1,5 +1,5 @@
-import { useEffect } from "react";
 import Header from "../../components/header";
+import { useEffect, useState } from "react";
 import { useApi } from "../../hooks/useApi";
 import { RaceProps } from "../../types/types";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -10,19 +10,31 @@ type IFormInput = {
 
 const HistoricalPage = () => {
   const { fetchData, data } = useApi();
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
   const { register, handleSubmit } = useForm<IFormInput>();
+  const [filteredDrivres, setFilteredDrivers] = useState([]);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
+    const getData = async () => {
+      await fetchData(`ride/${user.id}`);
+    };
+
     getData();
   }, []);
 
-  const getData = async () => {
-    await fetchData(`ride/${user.id}`);
-  };
+  useEffect(() => {
+    if (isInitialLoad && data?.races) {
+      const uniqueDrivers = data?.races?.filter(
+        (race: RaceProps, index: number, self: RaceProps[]) =>
+          self.findIndex((r) => r.driverName === race.driverName) === index
+      );
+      setFilteredDrivers(uniqueDrivers);
+      setIsInitialLoad(false);
+    }
+  }, [data, isInitialLoad]);
 
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    console.log(data);
     await fetchData(`ride/${user.id}`, data);
   };
 
@@ -38,24 +50,14 @@ const HistoricalPage = () => {
             {...register("driver_id")}
             className="border py-1 px-1 rounded-lg border-blue-400 text-blue-400"
           >
-            {data &&
-              data?.races
-                .filter(
-                  (race: RaceProps, index: number, self: RaceProps[]) =>
-                    self.findIndex((r) => r.driverName === race.driverName) ===
-                    index
+            {filteredDrivres &&
+              filteredDrivres.map(
+                (race: { driverId: number; driverName: string }) => (
+                  <option key={race.driverId} value={race.driverId}>
+                    {race.driverName}
+                  </option>
                 )
-                .map(
-                  (race: {
-                    id: number;
-                    driverId: number;
-                    driverName: string;
-                  }) => (
-                    <option key={race.id} value={race.driverId}>
-                      {race.driverName}
-                    </option>
-                  )
-                )}
+              )}
           </select>
           <button
             type="submit"

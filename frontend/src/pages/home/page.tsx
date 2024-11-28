@@ -1,8 +1,7 @@
-import GoogleMapComponent from "../../components/googleMap";
-import { SubmitHandler, useForm } from "react-hook-form";
 import { useState } from "react";
-
+import GoogleMapComponent from "../../components/googleMap";
 import Header from "../../components/header";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useApi } from "../../hooks/useApi";
 import { DriverPros } from "../../types/types";
 import { useNavigate } from "react-router-dom";

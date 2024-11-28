@@ -14,7 +14,12 @@ type Inputs = {
 };
 
 const HomePage = () => {
-  const { register, handleSubmit, reset } = useForm<Inputs>();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<Inputs>();
   const [directionsResponse, setDirectionsResponse] =
     useState<google.maps.DirectionsResult | null>(null);
   const [markers, setMarkers] = useState<{ lat: number; lng: number }[]>([]);
@@ -123,10 +128,7 @@ const HomePage = () => {
           }
         </div>
         <div className="flex flex-1 items-center justify-center">
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
             <div className="flex flex-col">
               <label htmlFor="origin" className="text-blue-400 font-semibold">
                 Origem:
@@ -134,10 +136,21 @@ const HomePage = () => {
               <input
                 type="text"
                 id="origin"
-                {...register("origin")}
+                {...register("origin", {
+                  required: "Digite o nome do local de partida",
+                })}
                 placeholder="De onde você partir?"
                 className="w-[300px] border-2 border-blue-400 rounded-lg p-1.5 outline-none"
               />
+              <span className="h-5">
+                <p
+                  className={`text-sm text-red-400 ${
+                    errors?.origin ? "" : "hidden"
+                  }`}
+                >
+                  {errors?.origin?.message}
+                </p>
+              </span>
             </div>
             <div className="flex flex-col">
               <label
@@ -149,14 +162,25 @@ const HomePage = () => {
               <input
                 type="text"
                 id="destination"
-                {...register("destination")}
+                {...register("destination", {
+                  required: "Digite o nome do local de destino",
+                })}
                 placeholder="Para onde você quer ir?"
                 className="w-[300px] border-2 border-blue-400 rounded-lg p-1.5 outline-none"
               />
+              <span className="h-5">
+                <p
+                  className={`text-sm text-red-400 ${
+                    errors?.destination ? "" : "hidden"
+                  }`}
+                >
+                  {errors?.destination?.message}
+                </p>
+              </span>
             </div>
             <button
               type="submit"
-              className="w-[300px] bg-blue-400 py-1.5 px-6 mt-6 text-white rounded-lg"
+              className="w-[300px] bg-blue-400 py-1.5 px-6 mt-4 text-white rounded-lg"
             >
               Calcular Rota
             </button>
@@ -164,43 +188,44 @@ const HomePage = () => {
         </div>
       </div>
       <div className="grid grid-cols-3 gap-4 py-6 mx-6">
-        {data?.drivers?.map((driver: DriverPros) => {
-          return (
-            <div
-              key={driver.options.name}
-              className="flex flex-col items-center bg-blue-200 py-2 px-2 gap-2 rounded-lg shadow-lg"
-            >
-              <div className="flex justify-between gap-6">
-                <h2>
-                  <strong>Nome: </strong> {driver.options.name}
-                </h2>
-                <p>
-                  <strong>Avaliação: </strong> {driver.options.review.rating}
-                  /10
-                </p>
-              </div>
-              <p className="text-justify">
-                <strong>Descrição:</strong> {driver.options.description}
-              </p>
-              <p>
-                <strong>Veículo:</strong> {driver.options.vehicle}
-              </p>
-              <p>
-                <strong>Valor:</strong> R${" "}
-                {driver.options.value.toLocaleString("pt-BR", {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
-              </p>
-              <button
-                onClick={() => handleRace(driver)}
-                className="w-[300px] bg-blue-400 py-1  text-white rounded-lg"
+        {data &&
+          data.drivers.map((driver: DriverPros) => {
+            return (
+              <div
+                key={driver.options.name}
+                className="flex flex-col items-center bg-blue-200 py-2 px-2 gap-2 rounded-lg shadow-lg"
               >
-                Selecionar Motorista
-              </button>
-            </div>
-          );
-        })}
+                <div className="flex justify-between gap-6 text-gray-600">
+                  <h3 className=" mr-8">
+                    <strong>Nome: </strong> {driver.options.name}
+                  </h3>
+                  <p>
+                    <strong>Avaliação: </strong> {driver.options.review.rating}
+                    /10
+                  </p>
+                </div>
+                <p className="text-justify text-gray-600">
+                  <strong>Descrição:</strong> {driver.options.description}
+                </p>
+                <p className="text-gray-600">
+                  <strong>Veículo:</strong> {driver.options.vehicle}
+                </p>
+                <p className="text-gray-600">
+                  <strong>Valor:</strong> R${" "}
+                  {driver.options.value.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+                <button
+                  onClick={() => handleRace(driver)}
+                  className="w-[300px] bg-blue-400 py-1  text-white rounded-lg"
+                >
+                  Selecionar Motorista
+                </button>
+              </div>
+            );
+          })}
       </div>
     </>
   );

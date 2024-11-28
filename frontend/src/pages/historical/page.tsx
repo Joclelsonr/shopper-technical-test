@@ -67,14 +67,14 @@ const HistoricalPage = () => {
       </form>
       <div className="flex flex-col justify-center items-center mt-2">
         {data &&
-          data?.races?.map((race: RaceProps) => (
+          data.races.map((race: RaceProps) => (
             <div
               key={race.id}
               className="w-4/5 flex flex-col py-2 px-2 gap-1 border-b border-blue-400"
             >
               <div className="flex justify-between">
-                <span>Nome: {race.driverName}</span>
-                <span>
+                <span className="text-gray-600">Nome: {race.driverName}</span>
+                <span className="text-gray-600">
                   Data:{" "}
                   {new Date(race.createdAt).toLocaleDateString("pt-BR", {
                     day: "2-digit",
@@ -84,13 +84,19 @@ const HistoricalPage = () => {
                 </span>
               </div>
               <div className="flex flex-col">
-                <span>Origen: {race.originName}</span>
-                <span>Destino: {race.destinyName}</span>
+                <span className="text-gray-600">Origen: {race.originName}</span>
+                <span className="text-gray-600">
+                  Destino: {race.destinyName}
+                </span>
               </div>
               <div className="flex justify-between">
-                <span>Distancia: {Math.floor(race.distance / 1000)} Km</span>
-                <span>Tempo: {Math.ceil(race.duration / 60)} minutos</span>
-                <span>
+                <span className="text-gray-600">
+                  Distancia: {Math.floor(race.distance / 1000)} Km
+                </span>
+                <span className="text-gray-600">
+                  Tempo: {Math.ceil(race.duration / 60)} minutos
+                </span>
+                <span className="text-gray-600">
                   Valor:{" "}
                   {new Intl.NumberFormat("pt-BR", {
                     style: "currency",

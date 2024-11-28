@@ -1,5 +1,5 @@
 import { Customer } from "@prisma/client";
-import { prisma } from "../database";
+import prisma from "../database";
 
 export class CustomerService {
   constructor() {}

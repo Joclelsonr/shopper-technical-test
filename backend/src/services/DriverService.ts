@@ -1,5 +1,5 @@
+import prisma from "../database";
 import { Driver } from "@prisma/client";
-import { prisma } from "../database";
 import { DriveProps } from "../types/types";
 
 export class DriverService {
